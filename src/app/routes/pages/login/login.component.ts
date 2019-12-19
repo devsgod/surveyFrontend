@@ -48,8 +48,8 @@ export class LoginComponent implements OnInit {
                     this.passwordNotMatch_isHidden = false;
                 } else if (this.resData.result_code == "160"){
                     localStorage.setItem("token",this.resData.data.token);
-                    localStorage.setItem("user_id",this.resData.data.id);
-                    this.router.navigate(['/', 'home']);
+                    localStorage.setItem("user_id",this.resData.data.id);                    
+                    this.router.navigate(['/' + this.resData.data.id + '/home']);
                 }
             });
         }

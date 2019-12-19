@@ -1,10 +1,11 @@
 <div class="content-heading">
-    <div>Data-Tables components
-        <small>Native and not wrapped angular2 based data-tables</small></div>
+    <div>Total Polls
+        <!-- <small>Native and not wrapped angular2 based data-tables</small> -->
+    </div>
 </div>
 <!-- <alert [type]="'info'">None of this examples are based on the official jQuery-Datatables</alert> -->
-<h4 class="page-header">ng2 Table
-    <small>Simple table extension with sorting, filtering, paging... for Angular2 apps by ValorSoftware</small>
+<h4 class="page-header">Please select to the polls here and answer correctly
+    <!-- <small>Simple table extension with sorting, filtering, paging... for Angular2 apps by ValorSoftware</small> -->
 </h4>
 <div class="mb-3 clearfix">
     <div class="pull-let wd-md">
@@ -21,3 +22,39 @@
     </pagination>
 </div>
 <!-- <pre *ngIf="config.paging" class="card card-block card-header">Page: {{page}} / {{numPages}}</pre> -->
+<!-- Small modal -->
+<div bsModal #smModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">{{cellData.title}}</h4>
+                <button type="button" class="close" aria-label="Close" (click)="smModal.hide()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div>
+                    {{cellData.description}}
+                </div>
+                <br>
+                <div class="c-radio">
+                    <label>
+                      <input type="radio" name="answerType" value="option1" [checked]="true" (change)="getAnswer($event)">
+                      <span class="fa fa-circle"></span>{{cellData.option1}}</label>
+                </div>
+                <div class="c-radio">
+                    <label>
+                      <input type="radio" name="answerType" value="option2" (change)="getAnswer($event)"/>
+                      <span class="fa fa-circle"></span>{{cellData.option2}}</label>
+                </div>
+                <div class="c-radio">
+                    <label>
+                      <input type="radio" name="answerType" value="option3" (change)="getAnswer($event)"/>
+                      <span class="fa fa-circle"></span>I don't understand</label>
+                </div>
+                <button class="btn btn-info" (click)="submitAnswer($event)">OK</button>
+
+            </div>
+        </div>
+    </div>
+</div>

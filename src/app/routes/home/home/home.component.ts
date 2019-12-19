@@ -1,8 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { ApiService } from 'src/app/api.service';
 import * as _ from 'lodash';
-
-import { TableData } from './ng2-table-data';
 
 @Component({
     selector: 'app-home',
@@ -12,29 +10,19 @@ import { TableData } from './ng2-table-data';
 export class HomeComponent implements OnInit {
 
     public singleData;
-
-    constructor(public http: HttpClient) {
-        // ng2Table
-        this.length = this.ng2TableData.length;
-    }
+    // public ng2TableData: Array<any> = [{title:"", description:"",createdDate:"", resNumber:""}];
+    public ng2TableData: Array<any> = [];
 
     // ng2Table
     public rows: Array<any> = [];
     public columns: Array<any> = [
-        { title: 'Name', name: 'name', filtering: { filterString: '', placeholder: 'Filter by name' } },
-        {
-            title: 'Position',
-            name: 'position',
-            sort: false,
-            filtering: { filterString: '', placeholder: 'Filter by position' }
-        },
-        { title: 'Office', className: ['office-header', 'text-success'], name: 'office', sort: 'asc' },
-        { title: 'Extn.', name: 'ext', sort: '', filtering: { filterString: '', placeholder: 'Filter by extn.' } },
-        { title: 'Start date', className: 'text-warning', name: 'startDate' },
-        { title: 'Salary ($)', name: 'salary' }
+        { title: 'Title', name: 'title',className: 'office-header', filtering: { filterString: '', placeholder: 'Filter by title' } },
+        { title: 'Description', name: 'description', sort: true, filtering: { filterString: '', placeholder: 'Filter by description' } },
+        { title: 'Create date', className: 'text-success', name: 'createdDate',filtering: { filterString: '', placeholder: 'Filter by date' } },
+        { title: 'Number of Response', name: 'resNumber', sort: true},
     ];
     public page: number = 1;
-    public itemsPerPage: number = 10;
+    public itemsPerPage: number = 8;
     public maxSize: number = 5;
     public numPages: number = 1;
     public length: number = 0;
@@ -46,10 +34,53 @@ export class HomeComponent implements OnInit {
         className: ['table-striped', 'table-bordered', 'mb-0', 'd-table-fixed']
     };
 
-    public ng2TableData: Array<any> = TableData;
+    //custom
+    public sendData: any = {};
+    public resData: any = {};
+    public polltotData: Array<any> = [];
+    public cellData: any = {};
+    public answerData: any = {};
+
+    @ViewChild('smModal', { static: true }) smModal:any;
+
+
+    constructor( private api: ApiService) {
+        // ng2Table
+
+        this.api.sendApiRequest('polls/getpoll',this.sendData)
+            .subscribe(data => {
+                // console.log(data); 
+                if (data != null)  {
+                    this.resData = data;
+                    this.polltotData = this.resData.data;
+                    console.log(this.polltotData);
+                    this.length = this.polltotData.length;
+                    var i;
+                    for (i=0;i<this.length;i++){
+                        if (this.polltotData[i].poll_status == "true"){
+                            this.ng2TableData.push({
+                                title:this.polltotData[i].poll_title,
+                                description:this.polltotData[i].poll_description,
+                                createdDate:this.polltotData[i].poll_date_created, 
+                                resNumber:"0",
+                                poll_id:this.polltotData[i].poll_id,
+                                option1:this.polltotData[i].poll_answers.option1,
+                                option2:this.polltotData[i].poll_answers.option2
+                                });
+                        }                        
+                    }
+                    console.log(this.ng2TableData);
+                    this.length = this.ng2TableData.length;
+                    this.onChangeTable(this.config);
+                }               
+                             
+            });
+
+            
+    }
 
     public ngOnInit(): void {
-        this.onChangeTable(this.config);
+        
     }
 
     public changePage(page: any, data: Array<any> = this.ng2TableData): Array<any> {
@@ -143,6 +174,30 @@ export class HomeComponent implements OnInit {
 
     public onCellClick(data: any): any {
         console.log(data);
+        this.cellData = data.row;
+        this.answerData.answer = "option1";
+        this.answerData.poll_id = this.cellData.poll_id;
+
+        this.smModal.show();
     }
 
+    public getAnswer(event){
+        this.answerData.answer = event.target.value;
+    }
+
+    public submitAnswer(event){
+        this.answerData.date = new Date().toUTCString();
+        console.log(this.answerData);     
+
+        this.api.sendApiRequest('polls/response',this.answerData)
+        .subscribe(data => {
+            console.log(data);
+            this.resData = data;
+            if (this.resData.result_code == "311"){
+            } else if (this.resData.result_code == "312"){
+            }
+        });
+
+        this.smModal.hide();
+    }
 }

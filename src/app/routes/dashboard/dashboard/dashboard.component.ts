@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { ApiService } from 'src/app/api.service';
+import { ToasterService, ToasterConfig } from 'angular2-toaster/angular2-toaster';
 
 import { ColorsService } from '../../../shared/colors/colors.service';
 
@@ -10,43 +12,13 @@ import { ColorsService } from '../../../shared/colors/colors.service';
 })
 export class DashboardComponent implements OnInit {
 
-  sparkValues = [1,3,4,7,5,9,4,4,7,5,9,6,4];
-
-    easyPiePercent: number = 70;
-    pieOptions = {
-        animate: {
-            duration: 800,
-            enabled: true
-        },
-        barColor: this.colors.byName('info'),
-        trackColor: 'rgba(200,200,200,0.4)',
-        scaleColor: false,
-        lineWidth: 10,
-        lineCap: 'round',
-        size: 145
-    };
-
-    sparkOptions1 = {
-        barColor: this.colors.byName('info'),
-        height: 30,
-        barWidth: '5',
-        barSpacing: '2'
-    };
-
-    sparkOptions2 = {
-        type: 'line',
-        height: 80,
-        width: '100%',
-        lineWidth: 2,
-        lineColor: this.colors.byName('purple'),
-        spotColor: '#888',
-        minSpotColor: this.colors.byName('purple'),
-        maxSpotColor: this.colors.byName('purple'),
-        fillColor: '',
-        highlightLineColor: '#fff',
-        spotRadius: 3,
-        resize: true
-    };
+    // TOASTER
+    toaster: any;
+    toasterConfig: any;
+    toasterconfig: ToasterConfig = new ToasterConfig({
+        positionClass: 'toast-bottom-right',
+        showCloseButton: true
+    });
 
     splineHeight = 280;
     splineData: any;
@@ -92,16 +64,79 @@ export class DashboardComponent implements OnInit {
         shadowSize: 0
     };
 
+    //customize value
+    public sendData: any = {};
+    public userpoll_resData: any = {};
+    public userPollData: Array<any> = [];
+    public userPollCount: number = 0;
+    public userPollActive: number = 0;
+    public userPollviewNum: number = 0;
+    public userpoll_resStatus: any = {};
 
-  constructor(public colors: ColorsService, public http: HttpClient) {
-    http.get('assets/server/chart/spline.json').subscribe(data => this.splineData = data);
-   }
+    constructor(public colors: ColorsService, public http: HttpClient,  private api: ApiService, public toasterService: ToasterService) {
+        http.get('assets/server/chart/spline.json').subscribe(data => this.splineData = data);
+
+        this.toaster = {
+            type: 'success',
+            title: 'Title',
+            text: 'Message'
+          };
+
+        this.api.sendApiRequest('polls/userpolldata',this.sendData)
+            .subscribe(data => {
+                console.log(data);
+                this.userpoll_resData = data;
+                if (data != null){
+                    if (this.userpoll_resData.result_code == "314"){
+                        this.userPollData = this.userpoll_resData.data.data;
+                        // console.log(this.userPollData);
+                        this.userPollCount = this.userPollData.length;
+                        var i = 0;
+                        for (i = 0; i < this.userPollCount; i++){
+                            if (this.userPollData[i].poll_status == "true"){
+                                this.userPollActive = this.userPollActive + 1;
+                            }
+                            this.userPollData[i].poll_resNum = 0;
+                            if (this.userPollData[i].user_response != null){
+                                this.userPollviewNum = this.userPollviewNum + 1;
+                                this.userPollData[i].poll_resNum = this.userPollData[i].user_response.length;
+                            }
+                        }                        
+                    }
+                }
+            });
+    }
 
     ngOnInit() {
     }
 
     colorByName(name) {
       return this.colors.byName(name);
-  }
-  
+    }
+
+    public getActiveStatus(event, item){
+        // console.log(item);
+        
+        this.sendData.poll_id = item.poll_id;
+        this.sendData.poll_status = String(event.target.checked);
+        
+        this.api.sendApiRequest('polls/changestatus',this.sendData)
+            .subscribe(data => {
+                // console.log(data);
+                this.userpoll_resStatus = data;
+                if (data != null){
+                    if (this.userpoll_resStatus.result_code == "315"){  
+
+                        if (this.sendData.poll_status == "true"){
+                            this.userPollActive = this.userPollActive + 1;
+                        } 
+                        if (this.sendData.poll_status == "false"){
+                            this.userPollActive = this.userPollActive - 1;
+                        }                        
+                    } else if (this.userpoll_resData.result_code == "400"){
+                        this.toasterService.pop("warning", "Warning", "Status Does not Changed!");                        
+                    }
+                }
+            });
+    }
 }

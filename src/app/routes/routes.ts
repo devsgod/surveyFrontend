@@ -9,20 +9,7 @@ import { Error404Component } from './pages/error404/error404.component';
 import { Error500Component } from './pages/error500/error500.component';
 
 export const routes = [
-
-    {
-        path: '',
-        component: LayoutComponent,
-        children: [
-            { path: '', redirectTo: 'home', pathMatch: 'full' },
-            { path: 'home', loadChildren: './home/home.module#HomeModule' },
-            { path: 'dashboard', loadChildren: './dashboard/dashboard.module#DashboardModule' },
-            { path: 'createpoll', loadChildren: './createpoll/createpoll.module#CreatepollModule' },
-            { path: 'reportpoll', loadChildren: './reportpoll/reportpoll.module#ReportpollModule' },
-            { path: 'invite', loadChildren: './invite/invite.module#InviteModule' }
-        ]
-    },
-
+    { path: '', redirectTo: 'login', pathMatch: 'full' },
     // Not lazy-loaded routes
     { path: 'login', component: LoginComponent },
     { path: 'register', component: RegisterComponent },
@@ -32,7 +19,20 @@ export const routes = [
     { path: '404', component: Error404Component },
     { path: '500', component: Error500Component },
 
+    {
+        path: '',
+        component: LayoutComponent,
+        children: [
+            
+            { path: 'home', loadChildren: './home/home.module#HomeModule' },
+            { path: 'dashboard', loadChildren: './dashboard/dashboard.module#DashboardModule' },
+            { path: 'createpoll', loadChildren: './createpoll/createpoll.module#CreatepollModule' },
+            { path: 'reportpoll', loadChildren: './reportpoll/reportpoll.module#ReportpollModule' },
+            { path: 'invite', loadChildren: './invite/invite.module#InviteModule' }
+        ]
+    },
+    
     // Not found
-    { path: '**', redirectTo: 'home' }
+    { path: '**', redirectTo: '404' }
 
 ];
