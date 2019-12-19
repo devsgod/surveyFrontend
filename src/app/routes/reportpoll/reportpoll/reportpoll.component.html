@@ -1,0 +1,19 @@
+<div class="lg-6">
+    <div class="card card-default">
+        <div class="card-header">
+            <div class="card-title">Client-side Search and Filtering</div>
+        </div>
+        <div class="card-body">
+            <div class="row mb-4">
+                <div class="col-lg-4">
+                    <input type='text' class="form-control" placeholder='Type to filter the name column...' (keyup)='updateFilter($event)' />
+                </div>
+            </div>
+            <ngx-datatable #table class='bootstrap no-detail-row' [columns]="columns" [columnMode]="'force'" [footerHeight]="50" [rowHeight]="'auto'" [limit]="10" [rows]='rowsFilter'>
+                <ngx-datatable-column name="Name" [width]="300"></ngx-datatable-column>
+                <ngx-datatable-column name="Gender" [width]="300"></ngx-datatable-column>
+                <ngx-datatable-column name="Company" [width]="400"></ngx-datatable-column>
+            </ngx-datatable>
+        </div>
+    </div>
+</div>

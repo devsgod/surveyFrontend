@@ -1,0 +1,46 @@
+<div class="card card-default  col-md-6">
+    <div class="card-header">Create the Poll</div>
+    <div class="card-body">
+        <toaster-container [toasterconfig]="toasterconfig"></toaster-container>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label>Title</label>
+                    <input class="form-control" type="text" placeholder="Enter a title..." (change)="getTitle($event)" />
+                    <div class="text-danger text-center card bg-warning" style="margin-top: 10px;" *ngIf="!titleEmpty_isHidden">This field required!</div>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea class="form-control" placeholder="Enter a description..." rows="5" (change)="getDescription($event)"></textarea>
+                    <div class="text-danger text-center card bg-warning" style="margin-top: 10px;" *ngIf="!descriptionEmpty_isHidden">This field required!</div>
+                </div>
+                <div class="form-group">
+                    <label class="text-muted mb-1">Answer Type</label>
+                    <div class="c-radio">
+                        <label>
+                          <input type="radio" name="answerType" value="default" [checked]="true" (change)="getAnswerType($event)">
+                          <span class="fa fa-circle"></span>Default</label>
+                    </div>
+                    <div class="c-radio">
+                        <label>
+                          <input type="radio" name="answerType" value="custom" (change)="getAnswerType($event)"/>
+                          <span class="fa fa-circle"></span>Custom</label>
+                    </div>
+                    <div *ngIf="!option_isHidden">
+                        <div class="form-group">
+                            <label>Option1</label>
+                            <input class="form-control" type="text" placeholder="Enter a Option1..." (change)="getOption1($event)" />
+                            <div class="text-danger text-center card bg-warning" style="margin-top: 10px;" *ngIf="!option1Empty_isHidden">This field required!</div>
+                        </div>
+                        <div class="form-group">
+                            <label>Option2</label>
+                            <input class="form-control" type="text" placeholder="Enter a Option2..." (change)="getOption2($event)" />
+                            <div class="text-danger text-center card bg-warning" style="margin-top: 10px;" *ngIf="!option2Empty_isHidden">This field required!</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button class="btn btn-info" (click)="pop()">Create Poll</button>
+    </div>
+</div>
