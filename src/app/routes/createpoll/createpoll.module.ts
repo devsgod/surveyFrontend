@@ -3,6 +3,7 @@ import { CreatepollComponent } from './createpoll/createpoll.component';
 import { Routes, RouterModule } from '@angular/router';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { ToasterService } from 'angular2-toaster/angular2-toaster';
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
 
 const routes: Routes = [
@@ -12,7 +13,9 @@ const routes: Routes = [
   declarations: [CreatepollComponent],
   imports: [
     SharedModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
+    NgxDatatableModule
+
   ],
   providers: [
     ToasterService

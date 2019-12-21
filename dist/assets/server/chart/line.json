@@ -1,43 +1,43 @@
 [{
-    "label": "Complete",
-    "color": "#5ab1ef",
+    "label": "Option1",
+    "color": "#4acab4",
     "data": [
-        ["Jan", 188],
-        ["Feb", 183],
-        ["Mar", 185],
-        ["Apr", 199],
-        ["May", 190],
-        ["Jun", 194],
-        ["Jul", 194],
-        ["Aug", 184],
-        ["Sep", 74]
+        ["Mar", 188],
+        ["Apr", 183],
+        ["May", 185],
+        ["Jun", 250],
+        ["Jul", 190],
+        ["Aug", 194],
+        ["Sep", 154],
+        ["Oct", 164],
+        ["Nov", 74]
     ]
 }, {
-    "label": "In Progress",
-    "color": "#f5994e",
+    "label": "Option1",
+    "color": "#ffea88",
     "data": [
-        ["Jan", 153],
-        ["Feb", 116],
-        ["Mar", 136],
-        ["Apr", 119],
-        ["May", 148],
-        ["Jun", 133],
-        ["Jul", 118],
-        ["Aug", 161],
-        ["Sep", 59]
+        ["Mar", 153],
+        ["Apr", 116],
+        ["May", 136],
+        ["Jun", 119],
+        ["Jul", 148],
+        ["Aug", 133],
+        ["Sep", 118],
+        ["Oct", 131],
+        ["Nov", 59]
     ]
 }, {
-    "label": "Cancelled",
-    "color": "#d87a80",
+    "label": "I do not understand",
+    "color": "#ff8153",
     "data": [
-        ["Jan", 111],
-        ["Feb", 97],
-        ["Mar", 93],
-        ["Apr", 110],
-        ["May", 102],
-        ["Jun", 93],
-        ["Jul", 92],
-        ["Aug", 92],
-        ["Sep", 44]
+        ["Mar", 111],
+        ["Apr", 97],
+        ["May", 93],
+        ["Jun", 110],
+        ["Jul", 102],
+        ["Aug", 93],
+        ["Sep", 92],
+        ["Oct", 92],
+        ["Nov", 44]
     ]
 }]

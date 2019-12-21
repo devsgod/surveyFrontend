@@ -53,16 +53,17 @@ export class RegisterComponent implements OnInit {
             console.log(value);
             console.log(this.registerData);
 
-
             this.api.sendApiRequest('users/signup',this.registerData)
             .subscribe(data => {
                 console.log(data);
                 this.resData = data;
-                if (this.resData.result_code == "105"){
-                    this.emailExist_isHidden = false;
-                } else if (this.resData.result_code == "106"){
-                    this.router.navigate(['/', 'login']);
-                }
+                if (data != null){
+                    if (this.resData.result_code == "105"){
+                        this.emailExist_isHidden = false;
+                    } else if (this.resData.result_code == "106"){
+                        this.router.navigate(['/', 'login']);
+                    }
+                }                
             });
 
         }

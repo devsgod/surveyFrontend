@@ -29,19 +29,30 @@ const Invite = {
     icon: 'icon-note'    
 };
 
+const Logout = {
+    text: 'Logout',
+    link: '/login',
+    icon: 'icon-logout'   
+};
+
 
 const headingMain = {
-    text: 'Main Navigation',
+    text: 'Main',
     heading: true
 };
 
 const headingComponents = {
-    text: 'Components',
+    text: 'Poll Management',
     heading: true
 };
 
 const headingMore = {
-    text: 'More',
+    text: 'Contact',
+    heading: true
+};
+
+const headingOthers = {
+    text: 'Others',
     heading: true
 };
 
@@ -53,5 +64,7 @@ export const menu = [
     Createpoll,
     Reportpoll,
     headingMore,
-    Invite
+    Invite,
+    headingOthers,
+    Logout
 ];

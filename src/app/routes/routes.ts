@@ -7,6 +7,8 @@ import { LockComponent } from './pages/lock/lock.component';
 import { MaintenanceComponent } from './pages/maintenance/maintenance.component';
 import { Error404Component } from './pages/error404/error404.component';
 import { Error500Component } from './pages/error500/error500.component';
+import { ActivateGuard } from '../activate.guard';
+
 
 export const routes = [
     { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -22,6 +24,7 @@ export const routes = [
     {
         path: '',
         component: LayoutComponent,
+        canActivate: [ActivateGuard],
         children: [
             
             { path: 'home', loadChildren: './home/home.module#HomeModule' },

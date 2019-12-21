@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ApiService } from 'src/app/api.service';
+import { ToasterService, ToasterConfig } from 'angular2-toaster/angular2-toaster';
 import * as _ from 'lodash';
 
 @Component({
@@ -8,6 +9,14 @@ import * as _ from 'lodash';
     styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
+
+    // TOASTER
+    toaster: any;
+    toasterConfig: any;
+    toasterconfig: ToasterConfig = new ToasterConfig({
+        positionClass: 'toast-bottom-right',
+        showCloseButton: true
+    });
 
     public singleData;
     // public ng2TableData: Array<any> = [{title:"", description:"",createdDate:"", resNumber:""}];
@@ -35,6 +44,9 @@ export class HomeComponent implements OnInit {
     };
 
     //custom
+    @ViewChild('opt1', { static: true }) Opt1: any;
+
+
     public sendData: any = {};
     public resData: any = {};
     public polltotData: Array<any> = [];
@@ -44,39 +56,58 @@ export class HomeComponent implements OnInit {
     @ViewChild('smModal', { static: true }) smModal:any;
 
 
-    constructor( private api: ApiService) {
-        // ng2Table
+    constructor( public toasterService: ToasterService,private api: ApiService) {
 
+        this.toaster = {
+            type: 'success',
+            title: 'Title',
+            text: 'Message'
+          };
+
+        this.sendData.user_id = localStorage.getItem("user_id");
+        this.answerData.user_id = localStorage.getItem("user_id");
+
+        // ng2Table
         this.api.sendApiRequest('polls/getpoll',this.sendData)
             .subscribe(data => {
                 // console.log(data); 
+                this.resData = data;
+
                 if (data != null)  {
-                    this.resData = data;
                     this.polltotData = this.resData.data;
                     console.log(this.polltotData);
                     this.length = this.polltotData.length;
                     var i;
                     for (i=0;i<this.length;i++){
                         if (this.polltotData[i].poll_status == "true"){
-                            this.ng2TableData.push({
-                                title:this.polltotData[i].poll_title,
-                                description:this.polltotData[i].poll_description,
-                                createdDate:this.polltotData[i].poll_date_created, 
-                                resNumber:"0",
-                                poll_id:this.polltotData[i].poll_id,
-                                option1:this.polltotData[i].poll_answers.option1,
-                                option2:this.polltotData[i].poll_answers.option2
-                                });
+                            if (this.polltotData[i].user_response != null){
+                                this.ng2TableData.push({
+                                    title:this.polltotData[i].poll_title,
+                                    description:this.polltotData[i].poll_description,
+                                    createdDate:this.polltotData[i].poll_date_created, 
+                                    resNumber:this.polltotData[i].user_response.length,
+                                    poll_id:this.polltotData[i].poll_id,
+                                    option1:this.polltotData[i].poll_answers.option1,
+                                    option2:this.polltotData[i].poll_answers.option2
+                                    });
+                            } else {
+                                this.ng2TableData.push({
+                                    title:this.polltotData[i].poll_title,
+                                    description:this.polltotData[i].poll_description,
+                                    createdDate:this.polltotData[i].poll_date_created, 
+                                    resNumber:0,
+                                    poll_id:this.polltotData[i].poll_id,
+                                    option1:this.polltotData[i].poll_answers.option1,
+                                    option2:this.polltotData[i].poll_answers.option2
+                                    });
+                            }                            
                         }                        
                     }
                     console.log(this.ng2TableData);
                     this.length = this.ng2TableData.length;
                     this.onChangeTable(this.config);
-                }               
-                             
+                }                          
             });
-
-            
     }
 
     public ngOnInit(): void {
@@ -176,8 +207,13 @@ export class HomeComponent implements OnInit {
         console.log(data);
         this.cellData = data.row;
         this.answerData.answer = "option1";
+        console.log(this.Opt1);
+        this.Opt1.nativeElement.checked = true;        
         this.answerData.poll_id = this.cellData.poll_id;
-
+        this.answerData.poll_title = this.cellData.title;
+        this.answerData.email = localStorage.getItem("email");
+        this.answerData.experton = localStorage.getItem("experton");
+        this.answerData.years = localStorage.getItem("years");
         this.smModal.show();
     }
 
@@ -185,19 +221,24 @@ export class HomeComponent implements OnInit {
         this.answerData.answer = event.target.value;
     }
 
-    public submitAnswer(event){
+    public submitAnswer(){
         this.answerData.date = new Date().toUTCString();
-        console.log(this.answerData);     
+        console.log(this.answerData);
 
         this.api.sendApiRequest('polls/response',this.answerData)
         .subscribe(data => {
             console.log(data);
             this.resData = data;
-            if (this.resData.result_code == "311"){
-            } else if (this.resData.result_code == "312"){
-            }
+            if (data != null){
+                if (this.resData.result_code == "417"){
+                    this.toasterService.pop("success", `${this.answerData.poll_title}`, "Poll Answer Successfully!");
+                } else if (this.resData.result_code == "418"){
+                    this.toasterService.pop("success", `${this.answerData.poll_title}`, "Update Answer Successfully!");
+                } else {
+                    this.toasterService.pop("error", "Error", "Check Connection and Relogin!");
+                }
+            }            
         });
-
         this.smModal.hide();
     }
 }

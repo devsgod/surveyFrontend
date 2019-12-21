@@ -14,6 +14,9 @@ const routes: Routes = [
     RouterModule.forChild(routes),
     NgxDatatableModule
 
-  ]
+  ],
+  exports: [
+    RouterModule
+  ]  
 })
 export class ReportpollModule { }

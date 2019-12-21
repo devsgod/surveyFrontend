@@ -81,13 +81,14 @@ export class DashboardComponent implements OnInit {
             title: 'Title',
             text: 'Message'
           };
+        this.sendData.user_id = localStorage.getItem("user_id");
 
         this.api.sendApiRequest('polls/userpolldata',this.sendData)
             .subscribe(data => {
                 console.log(data);
                 this.userpoll_resData = data;
                 if (data != null){
-                    if (this.userpoll_resData.result_code == "314"){
+                    if (this.userpoll_resData.result_code == "414"){
                         this.userPollData = this.userpoll_resData.data.data;
                         // console.log(this.userPollData);
                         this.userPollCount = this.userPollData.length;
@@ -125,7 +126,7 @@ export class DashboardComponent implements OnInit {
                 // console.log(data);
                 this.userpoll_resStatus = data;
                 if (data != null){
-                    if (this.userpoll_resStatus.result_code == "315"){  
+                    if (this.userpoll_resStatus.result_code == "415"){  
 
                         if (this.sendData.poll_status == "true"){
                             this.userPollActive = this.userPollActive + 1;
@@ -133,7 +134,7 @@ export class DashboardComponent implements OnInit {
                         if (this.sendData.poll_status == "false"){
                             this.userPollActive = this.userPollActive - 1;
                         }                        
-                    } else if (this.userpoll_resData.result_code == "400"){
+                    } else if (this.userpoll_resData.result_code == "999"){
                         this.toasterService.pop("warning", "Warning", "Status Does not Changed!");                        
                     }
                 }

@@ -1,3 +1,5 @@
+<toaster-container [toasterconfig]="toasterconfig"></toaster-container>
+
 <div class="content-heading">
     <div>Total Polls
         <!-- <small>Native and not wrapped angular2 based data-tables</small> -->
@@ -39,7 +41,7 @@
                 <br>
                 <div class="c-radio">
                     <label>
-                      <input type="radio" name="answerType" value="option1" [checked]="true" (change)="getAnswer($event)">
+                      <input type="radio" #opt1 name="answerType" value="option1" [checked]="true" (change)="getAnswer($event)">
                       <span class="fa fa-circle"></span>{{cellData.option1}}</label>
                 </div>
                 <div class="c-radio">
@@ -52,8 +54,7 @@
                       <input type="radio" name="answerType" value="option3" (change)="getAnswer($event)"/>
                       <span class="fa fa-circle"></span>I don't understand</label>
                 </div>
-                <button class="btn btn-info" (click)="submitAnswer($event)">OK</button>
-
+                <button class="btn btn-info" (click)="submitAnswer()">Submit</button>
             </div>
         </div>
     </div>
