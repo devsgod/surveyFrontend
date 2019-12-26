@@ -7,7 +7,7 @@ import { ToasterService } from 'angular2-toaster/angular2-toaster';
 
 
 const routes: Routes = [
-  { path: '', component: DashboardComponent },
+  { path: ':id', component: DashboardComponent },
 ];
 @NgModule({
   declarations: [DashboardComponent],

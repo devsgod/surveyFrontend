@@ -36,13 +36,15 @@
                                 <strong class="text-primary">
                                <span class="circle bg-success circle-lg text-left"></span>
                                <span>{{item.user_email}}</span>
-                            </strong> (Experiences with {{item.years}} years on {{item.experton}})
-
+                            </strong>
+                                <small class="ml-auto text-muted ml-2 float-right">Response on {{item.responseDate}}</small>
                             </p>
-                            <p class="mb-1 text-sm">Answer: {{item.user_answer}}</p>
-                        </div>
-                        <div class="ml-auto">
-                            <small class="text-muted ml-2">Response on {{item.responseDate}}</small>
+                            <div class="">
+                            </div>
+                            (Experiences with {{item.years}} years on {{item.experton}})
+                            <p class="mb-1 text-sm">Answer: {{item.user_answer}}
+                                <input type="button" #inviteBtn class="btn btn-secondary btn-xs float-right" value="{{item.invite_status}}" (click)="invite($event, item, inviteBtn.value)" />
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -60,6 +62,43 @@
                 </div>
             </div>
             <!-- END card-footer-->
+        </div>
+    </div>
+</div>
+<div class="row">
+
+    <div class="col-xl-6">
+        <div class="card card-default">
+            <div class="card-header">
+                <div class="px-2 float-right badge badge-warning">{{receInviteNumber}}</div>
+                <!-- <div class="px-2 mr-2 float-right badge badge-success">12</div> -->
+                <div class="card-title">Your Invited Polls</div>
+            </div>
+            <!-- START list group-->
+            <scrollable class="list-group" height="360">
+                <!-- START list group item-->
+                <div class="list-group-item list-group-item-action" *ngFor="let item of receInviteData">
+                    <div class="media">
+                        <!-- <img class="align-self-start mx-2 circle thumb32" src="assets/img/user/02.jpg" alt="Image"> -->
+                        <div class="media-body text-truncate">
+                            <p class="mb-1">
+                                <strong class="text-primary">
+                               <span class="circle bg-success circle-lg text-left"></span>
+                               <span>{{item.user_email}}</span>
+                            </strong>
+                                <small class="ml-auto text-muted ml-2 float-right">Invite send on {{item.sendDate}}</small>
+                            </p>
+                            {{item.poll_description}}
+                            <p class="mb-1 text-sm">Answer: {{item.poll_answer}}
+                                <input *ngIf="!item.btnReject_isHidden" type="button" #rejectBtn class="btn btn-danger btn-xs float-right" style="margin-right: 10px;" value="{{item.btnRejectVal}}" (click)="reject($event, item, rejectBtn.value)" />
+                                <input *ngIf="!item.btnAccept_isHidden" type="button" #acceptBtn class="btn btn-primary btn-xs float-right" style="margin-right: 10px;" value="{{item.btnAcceptVal}}" (click)="accept($event, item, acceptBtn.value)" />
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <!-- END list group item-->
+            </scrollable>
+            <!-- END list group-->
         </div>
     </div>
 </div>

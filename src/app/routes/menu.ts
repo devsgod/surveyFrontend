@@ -1,31 +1,31 @@
 
 const Home = {
     text: 'Home',
-    link: '/home',
+    link: '/home'+`/${localStorage.getItem("token")}`,
     icon: 'icon-home'
 };
 
 const Dashboard = {
     text: 'Dashboard',
-    link: '/dashboard',
+    link: '/dashboard'+`/${localStorage.getItem("token")}`,
     icon: 'icon-speedometer'
 };
 
 const Createpoll = {
     text: 'Create Poll',
-    link: '/createpoll',
+    link: '/createpoll'+`/${localStorage.getItem("token")}`,
     icon: 'icon-grid'
 };
 
 const Reportpoll = {
     text: 'Report Poll',
-    link: '/reportpoll',
+    link: '/reportpoll'+`/${localStorage.getItem("token")}`,
     icon: 'icon-chemistry',
 };
 
 const Invite = {
     text: 'Invite',
-    link: '/invite',
+    link: '/invite'+`/${localStorage.getItem("token")}`,
     icon: 'icon-note'    
 };
 

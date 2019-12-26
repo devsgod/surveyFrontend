@@ -4,6 +4,7 @@ import { ApiService } from 'src/app/api.service';
 import { ToasterService, ToasterConfig } from 'angular2-toaster/angular2-toaster';
 
 import { ColorsService } from '../../../shared/colors/colors.service';
+import { Router, ActivatedRoute, Params } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
@@ -73,7 +74,9 @@ export class DashboardComponent implements OnInit {
     public userPollviewNum: number = 0;
     public userpoll_resStatus: any = {};
 
-    constructor(public colors: ColorsService, public http: HttpClient,  private api: ApiService, public toasterService: ToasterService) {
+    public id: string;
+
+    constructor(public colors: ColorsService, public http: HttpClient,  private api: ApiService, public toasterService: ToasterService, private router: Router, private activatedRoute: ActivatedRoute) {
         http.get('assets/server/chart/spline.json').subscribe(data => this.splineData = data);
 
         this.toaster = {
@@ -109,6 +112,16 @@ export class DashboardComponent implements OnInit {
     }
 
     ngOnInit() {
+
+        this.activatedRoute.params
+            .subscribe(
+                (params: Params) => {
+                this.id = params['id'];
+                console.log("params",this.id);
+                });
+        if (this.id != localStorage.getItem('token')){
+            this.router.navigateByUrl('/404');
+        }
     }
 
     colorByName(name) {

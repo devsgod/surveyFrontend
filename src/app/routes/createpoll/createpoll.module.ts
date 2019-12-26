@@ -7,7 +7,7 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
 
 const routes: Routes = [
-  { path: '', component: CreatepollComponent },
+  { path: ':id', component: CreatepollComponent },
 ];
 @NgModule({
   declarations: [CreatepollComponent],

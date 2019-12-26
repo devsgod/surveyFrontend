@@ -5,7 +5,7 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { SharedModule } from 'src/app/shared/shared.module';
 
 const routes: Routes = [
-  { path: '', component: ReportpollComponent },
+  { path: ':id', component: ReportpollComponent },
 ];
 @NgModule({
   declarations: [ReportpollComponent],

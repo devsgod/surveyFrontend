@@ -6,7 +6,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { ToasterService } from 'angular2-toaster/angular2-toaster';
 
 const routes: Routes = [
-    { path: '', component: HomeComponent },
+    { path: ':id', component: HomeComponent },
 ];
 
 @NgModule({

@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { DatatableComponent } from '@swimlane/ngx-datatable';
 import { ToasterService, ToasterConfig } from 'angular2-toaster/angular2-toaster';
 import { ApiService } from 'src/app/api.service';
+import { Router, ActivatedRoute, Params } from '@angular/router';
 
 
 @Component({
@@ -34,6 +35,8 @@ export class CreatepollComponent implements OnInit {
 
   //custom
 
+  public id: string;
+
   public newPollData: any = {};
   public titleEmpty_isHidden: Boolean = true;
   public descriptionEmpty_isHidden: Boolean = true;
@@ -55,7 +58,9 @@ export class CreatepollComponent implements OnInit {
   public userPollSelected: any = {};
   public userDelIndex: number = 0;
 
-  constructor(public toasterService: ToasterService, private api: ApiService) { 
+  
+
+  constructor(public toasterService: ToasterService, private api: ApiService, private router: Router, private activatedRoute: ActivatedRoute) { 
     this.toaster = {
       type: 'success',
       title: 'Title',
@@ -92,14 +97,28 @@ export class CreatepollComponent implements OnInit {
 
   }
 
-
   ngOnInit() {
-    this.newPollData.answerType = "default";
+    this.configValue();
+    this.activatedRoute.params
+    .subscribe(
+        (params: Params) => {
+        this.id = params['id'];
+        console.log("params",this.id);
+        });
+    if (this.id != localStorage.getItem('token')){
+        this.router.navigateByUrl('/404');
+    }
+
+  }
+
+  public configValue(){
     this.newPollData.option1 = "Yes";
     this.newPollData.option2 = "No";
+    this.newPollData.user_email = localStorage.getItem("email");
     this.newPollData.user_id = localStorage.getItem("user_id");
+    this.newPollData.answerType = "default";
+    this.newPollData.poll_id = "";
     this.userPollSelected.poll_answers = {"option1":"", "option2":""};
-
   }
 
   public updateFilter(event) {
@@ -155,12 +174,13 @@ export class CreatepollComponent implements OnInit {
         if (data != null){
           if (this.resData.result_code == "411"){
             this.toasterService.pop("success", "Success", "Poll created Successfully!");
-
+            this.newPollData.poll_id = this.resData.data;
+            this.userDelIndex = this.userPollData.length;
             this.userPollData.push({
               poll_id:this.resData.data,
               title:this.newPollData.title,
               description:this.newPollData.description,
-              poll_answers:{"option1":this.newPollData.option1, "optioin2":this.newPollData.option2},
+              poll_answers:{"option1":this.newPollData.option1, "option2":this.newPollData.option2},
               date:this.newPollData.dateCreated,
               poll_status:"false",
               poll_response:undefined,
@@ -171,7 +191,6 @@ export class CreatepollComponent implements OnInit {
             this.rowsFilter = this.userPollData;
             this.table.rows = this.userPollData;
             
-
           } else if (this.resData.result_code == "412"){
             this.toasterService.pop("warning", "Warning", "Poll already existed!");
           }
@@ -228,9 +247,14 @@ export class CreatepollComponent implements OnInit {
             //delete data from table
             if (this.userDelIndex > -1){
               this.userPollData.splice(this.userDelIndex, 1);
-              this.userPollSelected = {}
+              this.userPollSelected = {};
+              this.titleInput.nativeElement.value = "";
+              this.descriptionInput.nativeElement.value = "";
             }
+            this.newPollData = {};
+            this.configValue();
             this.table.rows = this.userPollData;
+
             
           } else if (this.resData.result_code == "413"){
             this.toasterService.pop("warning", "Warning", "Poll does not exist!");
@@ -282,7 +306,7 @@ export class CreatepollComponent implements OnInit {
             //   poll_id:this.resData.data,
             //   title:this.newPollData.title,
             //   description:this.newPollData.description,
-            //   poll_answers:{"option1":this.newPollData.option1, "optioin2":this.newPollData.option2},
+            //   poll_answers:{"option1":this.newPollData.option1, "option2":this.newPollData.option2},
             //   date:this.newPollData.dateCreated,
             //   poll_status:"false",
             //   poll_response:undefined,
@@ -293,7 +317,7 @@ export class CreatepollComponent implements OnInit {
               poll_id:this.resData.data,
               title:this.newPollData.title,
               description:this.newPollData.description,
-              poll_answers:{"option1":this.newPollData.option1, "optioin2":this.newPollData.option2},
+              poll_answers:{"option1":this.newPollData.option1, "option2":this.newPollData.option2},
               date:this.newPollData.dateCreated,
               poll_status:"false",
               poll_response:undefined,
@@ -318,9 +342,7 @@ export class CreatepollComponent implements OnInit {
       this.userPollSelected = event.row;
       //get seleted number
       this.userDelIndex = this.userPollData.indexOf(this.userPollSelected);
-      console.log(this.userDelIndex);
-      // console.log(this.userPollSelected);
-      
+      console.log(this.userPollSelected);
       
       if (this.userPollSelected.poll_answerType == "default"){
         this.defaultOpt.nativeElement.checked = true;
@@ -331,6 +353,9 @@ export class CreatepollComponent implements OnInit {
         this.newPollData.title = this.userPollSelected.title;
         this.newPollData.description = this.userPollSelected.description;
         this.newPollData.poll_id = this.userPollSelected.poll_id;
+        this.newPollData.user_email = localStorage.getItem("email");
+        this.newPollData.user_id = localStorage.getItem("user_id");
+
 
       } else if (this.userPollSelected.poll_answerType == "custom"){
         this.customOpt.nativeElement.checked = true;
@@ -341,8 +366,11 @@ export class CreatepollComponent implements OnInit {
         this.newPollData.title = this.userPollSelected.title;
         this.newPollData.description = this.userPollSelected.description;
         this.newPollData.poll_id = this.userPollSelected.poll_id;
-      }
+        this.newPollData.user_email = localStorage.getItem("email");
+        this.newPollData.user_id = localStorage.getItem("user_id");
 
+
+      }
     }
   }
 

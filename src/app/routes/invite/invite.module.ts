@@ -7,7 +7,7 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { SharedModule } from 'src/app/shared/shared.module';
 
 const routes: Routes = [
-  { path: '', component: InviteComponent },
+  { path: ':id', component: InviteComponent },
 ];
 @NgModule({
   declarations: [InviteComponent],

@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { DatatableComponent } from '@swimlane/ngx-datatable';
 import { ApiService } from 'src/app/api.service';
 import { HttpClient } from '@angular/common/http';
+import { Router, ActivatedRoute, Params } from '@angular/router';
 
 
 @Component({
@@ -98,6 +99,8 @@ export class ReportpollComponent implements OnInit {
 
     //customize values
 
+    public id: string;
+
     //poll get from database
     public sendData: any = {};
     public resData: any = {};
@@ -114,7 +117,7 @@ export class ReportpollComponent implements OnInit {
 
     //poll graph
 
-    constructor(private api: ApiService,public http: HttpClient) { 
+    constructor(private api: ApiService,public http: HttpClient, private router: Router, private activatedRoute: ActivatedRoute) { 
         this.http.get('assets/server/chart/line.json').subscribe(data => this.lineData = data);
         this.sendData.user_id = localStorage.getItem("user_id");
 
@@ -147,6 +150,16 @@ export class ReportpollComponent implements OnInit {
     ngOnInit() {
         this.pollAnswers.option1 = "Yes";
         this.pollAnswers.option2 = "No";
+
+        this.activatedRoute.params
+        .subscribe(
+            (params: Params) => {
+            this.id = params['id'];
+            console.log("params",this.id);
+            });
+        if (this.id != localStorage.getItem("token")){
+            this.router.navigateByUrl('/404');
+        }
     }
 
     public updateFilter(event) {

@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ApiService } from 'src/app/api.service';
 import { ToasterService, ToasterConfig } from 'angular2-toaster/angular2-toaster';
 import * as _ from 'lodash';
+import { ActivatedRoute, Router, Params } from '@angular/router';
 
 @Component({
     selector: 'app-home',
@@ -54,23 +55,23 @@ export class HomeComponent implements OnInit {
     public answerData: any = {};
 
     @ViewChild('smModal', { static: true }) smModal:any;
+    public id: string;
 
-
-    constructor( public toasterService: ToasterService,private api: ApiService) {
+    constructor( public toasterService: ToasterService,private api: ApiService, private router: Router, private activatedRoute: ActivatedRoute) {
 
         this.toaster = {
             type: 'success',
             title: 'Title',
             text: 'Message'
-          };
-
+          };     
+            
         this.sendData.user_id = localStorage.getItem("user_id");
         this.answerData.user_id = localStorage.getItem("user_id");
 
         // ng2Table
         this.api.sendApiRequest('polls/getpoll',this.sendData)
             .subscribe(data => {
-                // console.log(data); 
+                console.log(data); 
                 this.resData = data;
 
                 if (data != null)  {
@@ -88,17 +89,19 @@ export class HomeComponent implements OnInit {
                                     resNumber:this.polltotData[i].user_response.length,
                                     poll_id:this.polltotData[i].poll_id,
                                     option1:this.polltotData[i].poll_answers.option1,
-                                    option2:this.polltotData[i].poll_answers.option2
+                                    option2:this.polltotData[i].poll_answers.option2,
+                                    poll_user_id:this.polltotData[i].poll_user_id
                                     });
                             } else {
                                 this.ng2TableData.push({
                                     title:this.polltotData[i].poll_title,
                                     description:this.polltotData[i].poll_description,
-                                    createdDate:this.polltotData[i].poll_date_created, 
+                                    createdDate:this.polltotData[i].poll_date_created,
                                     resNumber:0,
                                     poll_id:this.polltotData[i].poll_id,
                                     option1:this.polltotData[i].poll_answers.option1,
-                                    option2:this.polltotData[i].poll_answers.option2
+                                    option2:this.polltotData[i].poll_answers.option2,
+                                    poll_user_id:this.polltotData[i].poll_user_id
                                     });
                             }                            
                         }                        
@@ -111,7 +114,17 @@ export class HomeComponent implements OnInit {
     }
 
     public ngOnInit(): void {
-        
+
+        this.activatedRoute.params
+            .subscribe(
+                (params: Params) => {
+                this.id = params['id'];
+                console.log("params",this.id);
+                });
+
+        // if (this.id != localStorage.getItem('token')){
+        //     this.router.navigateByUrl('/404');
+        // }
     }
 
     public changePage(page: any, data: Array<any> = this.ng2TableData): Array<any> {
@@ -204,17 +217,23 @@ export class HomeComponent implements OnInit {
     }
 
     public onCellClick(data: any): any {
-        console.log(data);
+        
+        console.log(data.row);
         this.cellData = data.row;
-        this.answerData.answer = "option1";
-        console.log(this.Opt1);
-        this.Opt1.nativeElement.checked = true;        
-        this.answerData.poll_id = this.cellData.poll_id;
-        this.answerData.poll_title = this.cellData.title;
-        this.answerData.email = localStorage.getItem("email");
-        this.answerData.experton = localStorage.getItem("experton");
-        this.answerData.years = localStorage.getItem("years");
-        this.smModal.show();
+        if (this.cellData.poll_user_id != localStorage.getItem("user_id")){
+            this.answerData.answer = "option1";
+            this.Opt1.nativeElement.checked = true;        
+            this.answerData.poll_id = this.cellData.poll_id;
+            this.answerData.title = this.cellData.title;
+            this.answerData.description = this.cellData.description;
+            this.answerData.poll_user_id = this.cellData.poll_user_id;
+            this.answerData.email = localStorage.getItem("email");
+            this.answerData.experton = localStorage.getItem("experton");
+            this.answerData.years = localStorage.getItem("years");
+            this.smModal.show();
+        } else {
+            this.toasterService.pop("error", "Error", "This is your Poll!");
+        }    
     }
 
     public getAnswer(event){
