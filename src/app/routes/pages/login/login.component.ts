@@ -68,7 +68,7 @@ export class LoginComponent implements OnInit {
                         localStorage.setItem("years",this.resData.data.years);
                         localStorage.setItem("email",this.resData.data.email);
                         localStorage.setItem("joinDate",this.resData.data.joinDate);
-                        window.location.href = "http://157.245.120.62/home/" + `${localStorage.getItem("token")}`;
+                        window.location.href = "http://localhost:4200/home/" + `${localStorage.getItem("token")}`;
                         
                         // this.router.navigate(['/home/',`${localStorage.getItem("token")}`]);
                     }
